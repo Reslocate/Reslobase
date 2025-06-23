@@ -37,8 +37,8 @@ const Dashboard = ({ user }) => {
     }
   };
 
-  if (loading) return <div style={{padding: '2rem', textAlign: 'center'}}>Loading fruits...</div>;
-  if (error) return <div style={{padding: '2rem', textAlign: 'center', color: 'red'}}>Error: {error.message}</div>;
+  if (loading) return <div style={{ padding: '2rem', textAlign: 'center' }}>Loading fruits...</div>;
+  if (error) return <div style={{ padding: '2rem', textAlign: 'center', color: 'red' }}>Error: {error.message}</div>;
 
   return (
     <div style={{
@@ -58,8 +58,8 @@ const Dashboard = ({ user }) => {
         boxShadow: '0 5px 15px rgba(0,0,0,0.1)'
       }}>
         <div>
-          <h1 style={{margin: 0, color: '#333'}}>🚀 Nhost Clone Dashboard</h1>
-          <p style={{margin: '0.5rem 0 0 0', color: '#666'}}>
+          <h1 style={{ margin: 0, color: '#333' }}>🚀 RESLOBASE Dashboard</h1>
+          <p style={{ margin: '0.5rem 0 0 0', color: '#666' }}>
             Welcome, {user?.preferred_username || user?.email || 'User'}! 👋
           </p>
         </div>
@@ -92,7 +92,7 @@ const Dashboard = ({ user }) => {
           alignItems: 'center',
           marginBottom: '2rem'
         }}>
-          <h2 style={{margin: 0, color: '#333'}}>🍎 Fruits Inventory</h2>
+          <h2 style={{ margin: 0, color: '#333' }}>🍎 Fruits Inventory</h2>
           <button
             onClick={() => setShowAddForm(!showAddForm)}
             style={{
@@ -117,48 +117,48 @@ const Dashboard = ({ user }) => {
             borderRadius: '10px',
             marginBottom: '2rem'
           }}>
-            <h3 style={{marginTop: 0, color: '#333'}}>Add New Fruit</h3>
-            <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem'}}>
+            <h3 style={{ marginTop: 0, color: '#333' }}>Add New Fruit</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
               <input
                 type="text"
                 placeholder="Fruit name"
                 value={newFruit.name}
-                onChange={(e) => setNewFruit({...newFruit, name: e.target.value})}
+                onChange={(e) => setNewFruit({ ...newFruit, name: e.target.value })}
                 required
-                style={{padding: '10px', borderRadius: '5px', border: '1px solid #ddd'}}
+                style={{ padding: '10px', borderRadius: '5px', border: '1px solid #ddd' }}
               />
               <input
                 type="text"
                 placeholder="Color"
                 value={newFruit.color}
-                onChange={(e) => setNewFruit({...newFruit, color: e.target.value})}
-                style={{padding: '10px', borderRadius: '5px', border: '1px solid #ddd'}}
+                onChange={(e) => setNewFruit({ ...newFruit, color: e.target.value })}
+                style={{ padding: '10px', borderRadius: '5px', border: '1px solid #ddd' }}
               />
               <input
                 type="text"
                 placeholder="Category"
                 value={newFruit.category}
-                onChange={(e) => setNewFruit({...newFruit, category: e.target.value})}
-                style={{padding: '10px', borderRadius: '5px', border: '1px solid #ddd'}}
+                onChange={(e) => setNewFruit({ ...newFruit, category: e.target.value })}
+                style={{ padding: '10px', borderRadius: '5px', border: '1px solid #ddd' }}
               />
               <input
                 type="number"
                 step="0.01"
                 placeholder="Price"
                 value={newFruit.price}
-                onChange={(e) => setNewFruit({...newFruit, price: e.target.value})}
-                style={{padding: '10px', borderRadius: '5px', border: '1px solid #ddd'}}
+                onChange={(e) => setNewFruit({ ...newFruit, price: e.target.value })}
+                style={{ padding: '10px', borderRadius: '5px', border: '1px solid #ddd' }}
               />
-              <label style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <input
                   type="checkbox"
                   checked={newFruit.in_stock}
-                  onChange={(e) => setNewFruit({...newFruit, in_stock: e.target.checked})}
+                  onChange={(e) => setNewFruit({ ...newFruit, in_stock: e.target.checked })}
                 />
                 In Stock
               </label>
             </div>
-            <div style={{marginTop: '1rem'}}>
+            <div style={{ marginTop: '1rem' }}>
               <button type="submit" style={{
                 background: '#007bff',
                 color: 'white',
@@ -211,14 +211,14 @@ const Dashboard = ({ user }) => {
               }}>
                 {fruit.in_stock ? '✅ In Stock' : '❌ Out of Stock'}
               </div>
-              <h3 style={{margin: '0 0 1rem 0', color: '#333', fontSize: '1.5rem'}}>
+              <h3 style={{ margin: '0 0 1rem 0', color: '#333', fontSize: '1.5rem' }}>
                 🍎 {fruit.name}
               </h3>
-              <div style={{color: '#555', lineHeight: '1.6'}}>
-                <p style={{margin: '0.5rem 0'}}><strong>Color:</strong> {fruit.color}</p>
-                <p style={{margin: '0.5rem 0'}}><strong>Category:</strong> {fruit.category}</p>
-                <p style={{margin: '0.5rem 0'}}><strong>Price:</strong> ${parseFloat(fruit.price).toFixed(2)}</p>
-                <p style={{margin: '0.5rem 0', fontSize: '0.9rem', color: '#888'}}>
+              <div style={{ color: '#555', lineHeight: '1.6' }}>
+                <p style={{ margin: '0.5rem 0' }}><strong>Color:</strong> {fruit.color}</p>
+                <p style={{ margin: '0.5rem 0' }}><strong>Category:</strong> {fruit.category}</p>
+                <p style={{ margin: '0.5rem 0' }}><strong>Price:</strong> ${parseFloat(fruit.price).toFixed(2)}</p>
+                <p style={{ margin: '0.5rem 0', fontSize: '0.9rem', color: '#888' }}>
                   <strong>Added:</strong> {new Date(fruit.created_at).toLocaleDateString()}
                 </p>
               </div>
