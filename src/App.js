@@ -1,66 +1,107 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { ApolloProvider } from '@apollo/client';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import keycloak from './auth/keycloak';
+import { NhostReactProvider, useAuthenticationStatus, useUserData } from '@nhost/react';
+import nhost from './nhost-config';
 import client from './graphql/apollo-client';
 import LoadingSpinner from './components/LoadingSpinner';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 
-function App() {
-  const [authenticated, setAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
+// Authentication wrapper component
+function AuthWrapper({ children }) {
+  const { isAuthenticated, isLoading } = useAuthenticationStatus();
+  const user = useUserData();
 
-  useEffect(() => {
-    keycloak.init({ 
-      onLoad: 'check-sso',
-      silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html'
-    }).then(authenticated => {
-      setAuthenticated(authenticated);
-      if (authenticated) {
-        setUser(keycloak.tokenParsed);
-      }
-      setLoading(false);
-    }).catch(error => {
-      console.error('Failed to initialize Keycloak:', error);
-      setLoading(false);
-    });
-  }, []);
-
-  const handleLogin = () => {
-    keycloak.login();
-  };
-
-  if (loading) {
-    return <LoadingSpinner />;
+  if (isLoading) {
+    return (
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh',
+        padding: '20px'
+      }}>
+        <LoadingSpinner />
+        <p style={{ marginTop: '20px', color: '#666', textAlign: 'center' }}>
+          Initializing authentication...
+        </p>
+      </div>
+    );
   }
 
   return (
-    <ApolloProvider client={client}>
-      <Router>
-        <div className="App">
-          <Routes>
-            <Route 
-              path="/" 
-              element={
-                authenticated ? 
-                <Dashboard user={user} /> : 
-                <Login onLogin={handleLogin} />
-              } 
-            />
-            <Route 
-              path="/dashboard" 
-              element={
-                authenticated ? 
-                <Dashboard user={user} /> : 
-                <Navigate to="/" replace />
-              } 
-            />
-          </Routes>
-        </div>
-      </Router>
-    </ApolloProvider>
+    <>
+      {React.Children.map(children, child =>
+        React.cloneElement(child, {
+          authenticated: isAuthenticated,
+          user: user,
+        })
+      )}
+    </>
+  );
+}
+
+// Main App component
+function App() {
+  return (
+    <NhostReactProvider nhost={nhost}>
+      <ApolloProvider client={client}>
+        <Router future={{
+          v7_startTransition: true,
+          v7_relativeSplatPath: true
+        }}>
+          <AuthWrapper>
+            <AppRoutes />
+          </AuthWrapper>
+        </Router>
+      </ApolloProvider>
+    </NhostReactProvider>
+  );
+}
+
+// Routes component
+function AppRoutes({ authenticated, user }) {
+  return (
+    <div className="App">
+      <Routes>
+        <Route
+          path="/"
+          element={
+            authenticated ? (
+              <Navigate to="/dashboard" replace />
+            ) : (
+              <Login />
+            )
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            authenticated ? (
+              <Navigate to="/dashboard" replace />
+            ) : (
+              <Login />
+            )
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            authenticated ? (
+              <Dashboard user={user} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          path="*"
+          element={<Navigate to="/" replace />}
+        />
+      </Routes>
+    </div>
   );
 }
 

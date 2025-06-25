@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useSignInEmailPassword } from '@nhost/react';
 
-const Login = ({ onLogin }) => {
+const Login = () => {
+  const { signInEmailPassword } = useSignInEmailPassword();
   const containerStyle = {
     minHeight: '100vh',
     display: 'flex',
@@ -67,6 +69,17 @@ const Login = ({ onLogin }) => {
     e.target.style.transform = 'translateY(0)';
   };
 
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    const { error } = await signInEmailPassword(email, password);
+    if (error) {
+      alert(error.message);
+    }
+  };
+
   return (
     <div style={containerStyle}>
       <div style={cardStyle}>
@@ -79,21 +92,62 @@ const Login = ({ onLogin }) => {
         <div style={featuresBoxStyle}>
           <h3 style={{ color: '#333', marginBottom: '1rem' }}>✨ Features</h3>
           <ul style={featureListStyle}>
-            <li style={{ marginBottom: '0.5rem' }}>🔐 Authentication with Keycloak</li>
+            <li style={{ marginBottom: '0.5rem' }}>🔐 Authentication with Nhost</li>
             <li style={{ marginBottom: '0.5rem' }}>📊 GraphQL API with Hasura</li>
             <li style={{ marginBottom: '0.5rem' }}>🗄️ PostgreSQL Database</li>
-            <li style={{ marginBottom: '0.5rem' }}>📁 File Storage with MinIO</li>
+            <li style={{ marginBottom: '0.5rem' }}>📁 File Storage</li>
             <li>⚡ Redis Caching</li>
           </ul>
         </div>
-        <button
-          onClick={onLogin}
-          style={buttonStyle}
-          onMouseOver={handleMouseOver}
-          onMouseOut={handleMouseOut}
-        >
-          🔑 Login / Register
-        </button>
+        <form onSubmit={handleLogin}>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            style={{
+              width: '100%',
+              padding: '12px',
+              marginBottom: '15px',
+              borderRadius: '5px',
+              border: '1px solid #ddd',
+              fontSize: '1rem'
+            }}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            style={{
+              width: '100%',
+              padding: '12px',
+              marginBottom: '15px',
+              borderRadius: '5px',
+              border: '1px solid #ddd',
+              fontSize: '1rem'
+            }}
+          />
+          <button
+            type="submit"
+            style={buttonStyle}
+            onMouseOver={handleMouseOver}
+            onMouseOut={handleMouseOut}
+          >
+            🔑 Login / Register
+          </button>
+        </form>
+        <p style={{ marginTop: '1rem', color: '#666', textAlign: 'center' }}>
+          Don't have an account?{' '}
+          <a
+            href="/signup"
+            style={{ color: '#667eea', textDecoration: 'none', fontWeight: 'bold' }}
+          >
+            Sign up
+          </a>
+        </p>
       </div>
     </div>
   );

@@ -1,24 +1,33 @@
-import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
-import { setContext } from '@apollo/client/link/context';
-import keycloak from '../auth/keycloak';
+import { ApolloClient, InMemoryCache } from '@apollo/client';
+import { createApolloClient } from '@nhost/apollo';
+import nhost from '../nhost-config';
 
-const httpLink = createHttpLink({
-  uri: 'https://reslobase-hasura.159.69.188.164.nip.io/v1/graphql',
-});
-
-const authLink = setContext((_, { headers }) => {
-  const token = keycloak.token;
-  return {
-    headers: {
-      ...headers,
-      authorization: token ? `Bearer ${token}` : "",
-    }
-  };
-});
-
-const client = new ApolloClient({
-  link: authLink.concat(httpLink),
-  cache: new InMemoryCache()
+// Create Apollo Client with Nhost integration
+const client = createApolloClient({
+  nhost,
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          // Add any specific cache policies here
+        },
+      },
+    },
+  }),
+  defaultOptions: {
+    watchQuery: {
+      fetchPolicy: 'cache-and-network',
+      errorPolicy: 'all',
+    },
+    query: {
+      fetchPolicy: 'network-only',
+      errorPolicy: 'all',
+    },
+    mutate: {
+      errorPolicy: 'all',
+    },
+  },
+  connectToDevTools: true,
 });
 
 export default client;

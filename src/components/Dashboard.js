@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_FRUITS, ADD_FRUIT } from '../graphql/queries';
-import keycloak from '../auth/keycloak';
+import { useSignOut } from '@nhost/react';
 
 const Dashboard = ({ user }) => {
   const [showAddForm, setShowAddForm] = useState(false);
@@ -16,8 +16,9 @@ const Dashboard = ({ user }) => {
   const { loading, error, data, refetch } = useQuery(GET_FRUITS);
   const [addFruit] = useMutation(ADD_FRUIT);
 
+  const { signOut } = useSignOut();
   const handleLogout = () => {
-    keycloak.logout();
+    signOut();
   };
 
   const handleAddFruit = async (e) => {
